@@ -5,9 +5,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.example.jolyt.mobile_shop.Database.DBOperation;
+import com.example.jolyt.mobile_shop.Database.Tables.Cart;
+import com.example.jolyt.mobile_shop.Database.Tables.Users;
+
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,6 +22,39 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Do not touch needed for database
+        try(Realm realm = Realm.getDefaultInstance()){
+
+        }
+        //toadd object  use : new oject then new transaction and copy
+        //for PK autogenerate
+        //mutableRealmInteger
+        //https://stackoverflow.com/questions/40174920/how-to-set-primary-key-auto-increment-in-realm-android
+
+        Realm re = Realm.getDefaultInstance();
+        DBOperation dbOp= new DBOperation(re);
+        Users user = new Users();
+        user.setName("théo");
+        user.setId();
+        dbOp.createItem(user);
+        Users us = dbOp.readWithId( re.where(Users.class).max("id").intValue(), Users.class);
+        Cart cart = new Cart();
+        cart.setId();
+        cart.setUser(us);
+        cart.setName("lemachin");
+        dbOp.createItem(cart);
+        Cart ca = dbOp.readWithId(re.where(Cart.class).max("id").intValue(), Cart.class);
+        Log.i("CartName", ca.getName());
+        Log.i("UserName", ca.getUser().getName());
+
+        for (int i = 0; i < re.where(Cart.class).findAll().size()+1; i++){
+            dbOp.deleteCartId(i);
+        }
+        Log.i("MaxCart", ""+re.where(Cart.class).findAll().size());
+        re.close();
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

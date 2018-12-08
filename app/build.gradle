@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'realm-android'
 android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.jolyt.mobile_shop"
-        minSdkVersion 19
+        minSdkVersion 26
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
